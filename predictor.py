@@ -4,12 +4,22 @@ Customer Churn Risk Predictor & Analytics Model Engine
 
 class ChurnPredictorModel:
     def __init__(self):
+        # Weights for heuristic churn probability estimation
         self.weights = {
-            "tenure_months": -0.04,
-            "monthly_charges": 0.015,
-            "support_tickets": 0.12,
-            "contract_is_monthly": 0.25
+            "tenure_months": -0.04,        # Longer tenure = lower churn
+            "monthly_charges": 0.015,       # Higher charges = higher churn
+            "support_tickets": 0.12,        # More tickets = higher churn
+            "contract_is_monthly": 0.25     # Month-to-month = higher churn
         }
+
+    def get_retention_action(self, risk_level: str, monthly_charges: float) -> str:
+        if risk_level == "HIGH":
+            if monthly_charges > 100:
+                return "Offer 20% annual discount & priority account manager"
+            return "Offer 15% discount on 1-year contract extension"
+        elif risk_level == "MEDIUM":
+            return "Send customer satisfaction survey & feature update guide"
+        return "No action needed (Healthy retention profile)"
 
     def predict_churn(self, tenure_months: int, monthly_charges: float, support_tickets: int, is_month_to_month: bool) -> dict:
         base_score = 0.35
@@ -34,11 +44,17 @@ class ChurnPredictorModel:
             "recommended_action": self.get_retention_action(risk_level, monthly_charges)
         }
 
-    def get_retention_action(self, risk_level: str, monthly_charges: float) -> str:
-        if risk_level == "HIGH":
-            if monthly_charges > 100:
-                return "Offer 20% annual discount & priority account manager"
-            return "Offer 15% discount on 1-year contract extension"
-        elif risk_level == "MEDIUM":
-            return "Send customer satisfaction survey & feature update guide"
-        return "No action needed (Healthy retention profile)"
+    def batch_predict(self, customer_records: list) -> list:
+        results = []
+        for cust in customer_records:
+            pred = self.predict_churn(
+                cust.get("tenure_months", 12),
+                cust.get("monthly_charges", 50.0),
+                cust.get("support_tickets", 0),
+                cust.get("is_month_to_month", True)
+            )
+            results.append({
+                "customer_id": cust.get("id"),
+                "prediction": pred
+            })
+        return results
