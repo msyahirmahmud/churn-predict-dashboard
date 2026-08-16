@@ -5,7 +5,7 @@ class TestChurnPredictorModel(unittest.TestCase):
     def setUp(self):
         self.model = ChurnPredictorModel()
 
-    def test_predict_churn_high_risk(self):
+    def test_predict_churn_high_risk_retention_recommendation(self):
         res = self.model.predict_churn(
             tenure_months=2,
             monthly_charges=120.0,
@@ -13,7 +13,7 @@ class TestChurnPredictorModel(unittest.TestCase):
             is_month_to_month=True
         )
         self.assertEqual(res["risk_level"], "HIGH")
-        self.assertGreater(res["probability"], 0.70)
+        self.assertTrue("20% annual discount" in res["recommended_action"])
 
     def test_batch_predict_processes_multiple_customers(self):
         customers = [
@@ -34,6 +34,7 @@ class TestChurnPredictorModel(unittest.TestCase):
             is_month_to_month=False
         )
         self.assertEqual(res["risk_level"], "LOW")
+        self.assertTrue("Healthy retention profile" in res["recommended_action"])
 
 if __name__ == '__main__':
     unittest.main()
