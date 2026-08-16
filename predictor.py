@@ -12,6 +12,15 @@ class ChurnPredictorModel:
             "contract_is_monthly": 0.25     # Month-to-month = higher churn
         }
 
+    def get_retention_action(self, risk_level: str, monthly_charges: float) -> str:
+        if risk_level == "HIGH":
+            if monthly_charges > 100:
+                return "Offer 20% annual discount & priority account manager"
+            return "Offer 15% discount on 1-year contract extension"
+        elif risk_level == "MEDIUM":
+            return "Send customer satisfaction survey & feature update guide"
+        return "No action needed (Healthy retention profile)"
+
     def predict_churn(self, tenure_months: int, monthly_charges: float, support_tickets: int, is_month_to_month: bool) -> dict:
         base_score = 0.35
         score = base_score + (
@@ -31,7 +40,8 @@ class ChurnPredictorModel:
         return {
             "probability": probability,
             "percentage": f"{round(probability * 100, 2)}%",
-            "risk_level": risk_level
+            "risk_level": risk_level,
+            "recommended_action": self.get_retention_action(risk_level, monthly_charges)
         }
 
     def batch_predict(self, customer_records: list) -> list:
