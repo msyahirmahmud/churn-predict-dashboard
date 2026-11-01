@@ -3,7 +3,6 @@
 [![Build Status](https://github.com/msyahirmahmud/churn-predict-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/msyahirmahmud/churn-predict-dashboard/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
-[![Tests Passing](https://img.shields.io/badge/Tests-100%25-brightgreen.svg)]()
 
 > Machine Learning Customer Churn Analytics Predictor model with feature weight classification and risk threshold scoring.
 
